@@ -60,5 +60,9 @@ export class NavbarComponent implements OnInit {
     this._link.emit(e)
   }
 
+  refreshMsg( t ){
+    this._wa.refreshWaMsg( t )
+  }
+
 
 }

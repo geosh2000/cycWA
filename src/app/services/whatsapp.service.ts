@@ -17,7 +17,7 @@ import { Howl } from 'howler';
 export class WhatsappService {
 
   sound = new Howl({
-    src: ['/whatsapp/assets/WhatsApp.mp3'],
+    src: ['/wazd/assets/WhatsApp.mp3'],
     volume: 1,
     preload: true
   });
@@ -324,6 +324,25 @@ export class WhatsappService {
                   this.sound.play()
 
                 }, err => {
+                  const error = err.error;
+                  this.toastr.error( error.msg, err.status );
+                  console.error(err.statusText, error.msg);
+
+                });
+  }
+
+  refreshWaMsg( t ){
+    this.loading = true;
+    clearTimeout(this.timeout['chat'])
+
+    this._api.restfulPut( {tipo: 'whatsapp', ticket: t}, 'Calls/zdPush' )
+                .subscribe( res => {
+
+                  this.loading = false;
+                  this.getConv(t, true)
+
+                }, err => {
+                  this.loading = false;
                   const error = err.error;
                   this.toastr.error( error.msg, err.status );
                   console.error(err.statusText, error.msg);

@@ -68,4 +68,9 @@
         </div>
 
     </mat-list>
+    <mat-divider></mat-divider>
+    <button mat-menu-item (click)="refreshMsg(_wa.chatInfo['ticketId'])">
+        <mat-icon>refresh</mat-icon>
+        <span>Refres Ticket</span>
+    </button>
 </mat-menu>
