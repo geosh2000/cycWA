@@ -13,7 +13,7 @@
 
 .inMsg {
     background: whitesmoke;
-    max-width: 90%;
+    max-width: 84%;
     padding: 5px;
     margin: 10px;
     margin-right: auto;
@@ -26,7 +26,7 @@
 
 .outMsg {
     background: #caecc8;
-    max-width: 90%;
+    max-width: 84%;
     padding: 5px;
     margin: 10px;
     margin-left: auto;

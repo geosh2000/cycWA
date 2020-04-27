@@ -4,13 +4,41 @@
         <mat-icon>sentiment_satisfied_alt</mat-icon>
     </button> -->
 
-    <textarea #note id='note' rows="1" (keyup)="auto_grow(note)" [readonly]="_wa.chatMsgs == {}"></textarea>
-    <button mat-icon-button (click)="submit()" [disabled]="msgSend == '' ||  _wa.chatMsgs == {}">
-            <mat-icon>send</mat-icon>
-    </button>
+    <div class="alert alert-warning" role="alert" *ngIf="_wa.userInfo['user_fields'] && _wa.userInfo['user_fields']['idioma_cliente'] == null">
+        Define un idioma en la barra superior para habilitar el cuadro de escritura
+    </div>
+    <ng-container *ngIf="_wa.userInfo['user_fields'] && _wa.userInfo['user_fields']['idioma_cliente'] != null">
+        <textarea #note id='note' rows="1" (keyup)="auto_grow(note.value)" [readonly]="_wa.chatMsgs == {}"></textarea>
+        <button mat-icon-button [matMenuTriggerFor]="templatesMenu" (click)="getTemplates()" [disabled]="_wa.chatMsgs == {}">
+                <mat-icon>subject</mat-icon>
+        </button>
+        <button mat-icon-button (click)="submit()" [disabled]="msgSend == '' ||  _wa.chatMsgs == {}">
+                <mat-icon>send</mat-icon>
+        </button>
+    </ng-container>
 </div>
 <div class="d-flex justify-content-between align-items-center" *ngIf="loading['reading']">
     <mat-progress-bar color="accent" mode="buffer"></mat-progress-bar>
 </div>
+
+<mat-menu #templatesMenu="matMenu">
+    <mat-progress-bar color="accent" mode="buffer" *ngIf="loading['templates']"></mat-progress-bar>
+    <ng-container *ngIf="!loading['templates']">
+        <ng-container *ngFor="let cat of templates | keys">
+            <button mat-menu-item [matMenuTriggerFor]="subMenu" [matMenuTriggerData]="{items: templates[cat]}">
+                <mat-icon>speaker_notes</mat-icon>
+                <span>{{ cat }}</span>
+            </button>
+        </ng-container>
+    </ng-container>
+</mat-menu>
+
+<mat-menu #subMenu="matMenu">
+    <ng-template matMenuContent let-items="items">
+        <ng-container *ngFor="let i of items">
+            <button mat-menu-item (click)="printTemplate(i['texto'])">{{i['titulo']}}</button>
+        </ng-container>
+    </ng-template>
+</mat-menu>
 
 <!-- <emoji-mart [style]="{ position: 'absolute', bottom: '20px'}" (emojiSelect)="addEmoji($event)" *ngIf="showEmoji"></emoji-mart> -->

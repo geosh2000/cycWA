@@ -57,6 +57,9 @@ export class ConvListComponent implements OnInit, OnDestroy {
   resizeChat(){
     this.windowHeight = window.innerHeight -  jQuery('#topMenu').innerHeight()
 
+    // console.log( window.innerHeight )
+    // console.log( jQuery('#topMenu') )
+
     if( this.resizeTo ){
       clearTimeout(this.resizeTo)
     }

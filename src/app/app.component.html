@@ -26,7 +26,7 @@
             </div>
         </div>
         <div class='col-7 p-0' #chatColumn>
-            <app-navbar (_link)="openModal($event)" tipo="chat"></app-navbar>
+            <app-navbar (_link)="openModal($event)" tipo="chat" [idiomas]="_info ? _info.idiomas : []"></app-navbar>
             <div class='parentWindow'>
                 <div class="mainWindow">
                     <app-chat-window></app-chat-window>

@@ -14,6 +14,8 @@ declare var jQuery:any;
 export class NavbarComponent implements OnInit {
 
   @Input() tipo:any = ''
+  @Input() userInfo = {}
+  @Input() idiomas = []
   @Output() _link = new EventEmitter<any>()
 
   constructor( public _init:InitService, public _token:TokenCheckService, public _wa:WhatsappService, public _route:Router,
@@ -56,7 +58,6 @@ export class NavbarComponent implements OnInit {
   }
 
   openModal( e ){
-    console.log(e)
     this._link.emit(e)
   }
 
@@ -64,5 +65,9 @@ export class NavbarComponent implements OnInit {
     this._wa.refreshWaMsg( t )
   }
 
+  selectedLang(e){
+    this._wa.userInfo['user_fields']['idioma_cliente'] = e.value
+    this._wa.saveUserInfo('user_fields')
+  }
 
 }

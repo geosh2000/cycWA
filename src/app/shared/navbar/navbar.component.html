@@ -5,8 +5,21 @@
             <mat-icon>arrow_back</mat-icon>
         </button>
         <span *ngIf="tipo == ''">{{ isChat(_route.url) ? _wa.chatInfo['requester'] : _wa.title }}</span>
-        <span *ngIf="tipo != ''">{{ tipo == 'conv' ? _wa.title : (_wa.chatInfo['requester'] ? _wa.chatInfo['requester'] : 'Sin Conversacion') }}</span>
+        <span class="text-truncate pr-1" *ngIf="tipo != ''">{{ tipo == 'conv' ? _wa.title : (_wa.chatInfo['requester'] ? _wa.chatInfo['requester'] : 'Sin Conversacion') }}</span>
         <span class="example-spacer"></span>
+        <ng-container *ngIf="tipo == 'chat'">
+            <mat-form-field class="formInfo" style="font-size: small" *ngIf="_wa.userInfo['user_fields'] && !_wa.loadingInfo && !_wa.loadingUI">
+                <mat-label>Idioma Usuario</mat-label>
+                <mat-select (selectionChange)="selectedLang($event)" [value]="_wa.userInfo['user_fields']['idioma_cliente']">
+                    <ng-container *ngFor="let lang of idiomas">
+                        <mat-option [value]="lang['lang']">
+                            {{ lang['idioma'] }}
+                        </mat-option>
+                    </ng-container>
+                </mat-select>
+            </mat-form-field>
+            <mat-progress-bar mode="buffer" *ngIf="_wa.loadingInfo || _wa.loadingUI"></mat-progress-bar>
+        </ng-container>
         <mat-icon class="text-success" aria-hidden="false" aria-label="Example heart icon" (click)="logout()" *ngIf="_token.token && (tipo == '' || tipo == 'chat')">person</mat-icon>
         <mat-icon class="" aria-hidden="false" aria-label="Example delete icon" (click)="login()" *ngIf="!_token.token && (tipo == '' || tipo == 'chat')">person_outline</mat-icon>
         <mat-icon [matMenuTriggerFor]="moreConv" *ngIf="_token.token && isChat(_route.url) && tipo == ''">more_vert</mat-icon>
@@ -71,6 +84,6 @@
     <mat-divider></mat-divider>
     <button mat-menu-item (click)="refreshMsg(_wa.chatInfo['ticketId'])">
         <mat-icon>refresh</mat-icon>
-        <span>Refres Ticket</span>
+        <span>Refresh Ticket</span>
     </button>
 </mat-menu>

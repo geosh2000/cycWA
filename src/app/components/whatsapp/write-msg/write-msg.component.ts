@@ -15,6 +15,7 @@ export class WriteMsgComponent implements OnInit {
   msgSend:any = ''
   loading:Object = {}
   showEmoji = false
+  templates = {}
 
   constructor( public _wa:WhatsappService, private _init:InitService, private _api:ApiService, private toastr:ToastrService ) { }
 
@@ -22,7 +23,7 @@ export class WriteMsgComponent implements OnInit {
   }
 
   auto_grow(el) {
-    let txt = el.value
+    let txt = el
     this.msgSend = txt
     let arr = txt.split('\n')
     let r = 0;
@@ -52,7 +53,7 @@ export class WriteMsgComponent implements OnInit {
     }
     jQuery('#note').attr('rows',r)
 
-    jQuery('#convWindow').innerHeight(window.innerHeight -  jQuery('#topMenu').innerHeight() - jQuery('#bottomBar').innerHeight())
+    jQuery('#chatWindowCyc').innerHeight(window.innerHeight -  jQuery('#topMenu').innerHeight() - jQuery('#bottomBar').innerHeight())
 
   }
 
@@ -79,7 +80,7 @@ export class WriteMsgComponent implements OnInit {
                   this.msgSend = ''
                   jQuery('#note').val('')
                   jQuery('#note').attr('rows',1)
-                  // jQuery('#convWindow').innerHeight(window.innerHeight -  jQuery('#topMenu').innerHeight() - jQuery('#bottomBar').innerHeight())
+                  jQuery('#chatWindowCyc').innerHeight(window.innerHeight -  jQuery('#topMenu').innerHeight() - jQuery('#bottomBar').innerHeight())
                   this._wa.scrollBottom()
 
                 }, err => {
@@ -98,6 +99,44 @@ export class WriteMsgComponent implements OnInit {
     jQuery('#note').val(this.msgSend)
     this.showEmoji = false
     console.log(e)
+  }
+
+  printTemplate( t ){
+    jQuery('#note').val( this.msgSend += t )
+    this.auto_grow( jQuery('#note').val() )
+    jQuery('#note').focus()
+  }
+
+  getTemplates(){
+    this.loading['templates'] = true;
+
+    this._api.restfulPut( '', 'Lists/waTemplates' )
+                .subscribe( res => {
+
+                  this.loading['templates'] = false;
+
+                  let t = res['data']
+                  let tmpl = {}
+
+                  for( let c of t ){
+                    if( tmpl[c['categoria']] ){
+                      tmpl[c['categoria']].push({titulo: c['titulo'], texto: c['texto']})
+                    }else{
+                      tmpl[c['categoria']] = [{titulo: c['titulo'], texto: c['texto']}]
+                    }
+                  }
+
+                  this.templates = tmpl
+
+                }, err => {
+
+                  this.loading['templates'] = false;
+
+                  const error = err.error;
+                  this.toastr.error( error.msg, err.status );
+                  console.error(err.statusText, error.msg);
+
+                });
   }
 
 }

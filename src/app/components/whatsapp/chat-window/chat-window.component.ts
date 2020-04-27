@@ -20,6 +20,7 @@ export class ChatWindowComponent implements OnInit, OnDestroy {
   chatHeight = 660
   param = {value: 'mundo'}
   tr:any
+  rTo:any
 
   constructor( private activatedRoute: ActivatedRoute, public _wa:WhatsappService, public _route:Router) {
     this.activatedRoute.params.subscribe( params => {
@@ -39,8 +40,20 @@ export class ChatWindowComponent implements OnInit, OnDestroy {
     this._wa.reloadChat = true
     this._wa.chatMsgs = []
 
-    this.windowHeight = window.innerHeight -  jQuery('#topMenu').innerHeight() -  jQuery('#bottomBar').innerHeight() - (this._wa.zdesk ? 70 : 0)
-    this.chatHeight = window.innerHeight - 40
+    this.resizeChat()
+  }
+
+  resizeChat(){
+    if( this.rTo ){
+      clearTimeout( this.rTo )
+    }
+
+    window.setTimeout( () => {
+      this.windowHeight = window.innerHeight -  jQuery('#topMenu').innerHeight() -  jQuery('#bottomBar').innerHeight() - (this._wa.zdesk ? 0 : 0)
+
+      if( this.windowHeight == 0 ){ this.windowHeight = 600 }
+      this.chatHeight = window.innerHeight - (this._wa.zdesk ? 0 : 40)
+    },1000)
   }
 
   ngOnDestroy(){

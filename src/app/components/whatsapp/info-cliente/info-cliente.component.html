@@ -10,44 +10,44 @@
             <div class="modal-body">
                 <mat-tab-group (selectedTabChange)="tabSelected($event)">
                     <mat-tab label="Perfil">
-                        <div class="container d-flex justify-content-center" *ngIf="loading['userInfo'] || loading['savingUI']">
+                        <div class="container d-flex justify-content-center" *ngIf="_wa.loadingInfo || _wa.loadingUI">
                             <mat-progress-bar mode="buffer"></mat-progress-bar>
                         </div>
-                        <div class="container" *ngIf="!loading['userInfo'] && !loading['savingUI'] && userInfo['user_fields']">
+                        <div class="container" *ngIf="!_wa.loadingInfo && !_wa.loadingUI && _wa.userInfo['user_fields']">
                             <div class="text-center p-2 pt-4">
                                 <mat-form-field class="formInfo">
-                                    <input matInput [(ngModel)]="userInfo['name']" placeholder="Nombre" #name>
+                                    <input matInput [(ngModel)]="_wa.userInfo['name']" placeholder="Nombre" #name>
                                 </mat-form-field>
                                 <ng-container *ngIf="loading['name']">
                                     <mat-progress-bar mode="buffer"></mat-progress-bar>
                                 </ng-container>
                                 <ng-container *ngIf="!loading['name']">
-                                    <button mat-icon-button color="accent" (click)="userInfo['name'] = originalUserInfo['name']" *ngIf="originalUserInfo['name'] != userInfo['name']">
+                                    <button mat-icon-button color="accent" (click)="_wa.userInfo['name'] = _wa.originalUserInfo['name']" *ngIf="_wa.originalUserInfo['name'] != _wa.userInfo['name']">
                                         <mat-icon>close</mat-icon>
                                     </button>
-                                    <button mat-icon-button color="primary" (click)="saveUserInfo('name')" *ngIf="originalUserInfo['name'] != userInfo['name']">
+                                    <button mat-icon-button color="primary" (click)="_wa.saveUserInfo('name')" *ngIf="_wa.originalUserInfo['name'] != _wa.userInfo['name']">
                                         <mat-icon>save</mat-icon>
                                     </button>
                                 </ng-container>
                                 <br>
                                 <mat-form-field class="formInfo">
-                                    <input matInput [(ngModel)]="userInfo['email']" placeholder="Correo" #email>
+                                    <input matInput [(ngModel)]="_wa.userInfo['email']" placeholder="Correo" #email>
                                 </mat-form-field>
                                 <ng-container *ngIf="loading['email']">
                                     <mat-progress-bar mode="buffer"></mat-progress-bar>
                                 </ng-container>
                                 <ng-container *ngIf="!loading['email']">
-                                    <button mat-icon-button color="accent" (click)="userInfo['email'] = originalUserInfo['email']" *ngIf="originalUserInfo['email'] != userInfo['email']">
+                                    <button mat-icon-button color="accent" (click)="_wa.userInfo['email'] = _wa.originalUserInfo['email']" *ngIf="_wa.originalUserInfo['email'] != _wa.userInfo['email']">
                                         <mat-icon>close</mat-icon>
                                     </button>
-                                    <button mat-icon-button color="primary" (click)="saveUserInfo('email')" *ngIf="originalUserInfo['email'] != userInfo['email']">
+                                    <button mat-icon-button color="primary" (click)="_wa.saveUserInfo('email')" *ngIf="_wa.originalUserInfo['email'] != _wa.userInfo['email']">
                                         <mat-icon>save</mat-icon>
                                     </button>
                                 </ng-container>
                                 <br>
                                 <mat-form-field class="formInfo">
                                     <mat-label>Idioma Usuario</mat-label>
-                                    <mat-select (selectionChange)="selectedLang($event)" [value]="userInfo['user_fields']['idioma_cliente']">
+                                    <mat-select (selectionChange)="selectedLang($event)" [value]="_wa.userInfo['user_fields']['idioma_cliente']">
                                         <ng-container *ngFor="let lang of idiomas">
                                             <mat-option [value]="lang['lang']">
                                                 {{ lang['idioma'] }}
@@ -59,40 +59,40 @@
                                     <mat-progress-bar mode="buffer"></mat-progress-bar>
                                 </ng-container>
                                 <ng-container *ngIf="!loading['lang']">
-                                    <button mat-icon-button color="accent" (click)="userInfo['user_fields']['idioma_cliente'] = originalUserInfo['user_fields']['idioma_cliente']" *ngIf="originalUserInfo['user_fields']['idioma_cliente'] != userInfo['user_fields']['idioma_cliente']">
+                                    <button mat-icon-button color="accent" (click)="_wa.userInfo['user_fields']['idioma_cliente'] = _wa.originalUserInfo['user_fields']['idioma_cliente']" *ngIf="_wa.originalUserInfo['user_fields']['idioma_cliente'] != _wa.userInfo['user_fields']['idioma_cliente']">
                                         <mat-icon>close</mat-icon>
                                     </button>
-                                    <button mat-icon-button color="primary" (click)="saveUserInfo('user_fields')" *ngIf="originalUserInfo['user_fields']['idioma_cliente'] != userInfo['user_fields']['idioma_cliente']">
+                                    <button mat-icon-button color="primary" (click)="_wa.saveUserInfo('user_fields')" *ngIf="_wa.originalUserInfo['user_fields']['idioma_cliente'] != _wa.userInfo['user_fields']['idioma_cliente']">
                                         <mat-icon>save</mat-icon>
                                     </button>
                                 </ng-container>
                                 <br>
                                 <mat-form-field class="formInfo">
-                                    <input matInput [(ngModel)]="userInfo['phone']" placeholder="Teléfono" #phone>
+                                    <input matInput [(ngModel)]="_wa.userInfo['phone']" placeholder="Teléfono" #phone>
                                 </mat-form-field>
                                 <ng-container *ngIf="loading['phone_number']">
                                     <mat-progress-bar mode="buffer"></mat-progress-bar>
                                 </ng-container>
                                 <ng-container *ngIf="!loading['phone_number']">
-                                    <button mat-icon-button color="accent" (click)="userInfo['phone'] = originalUserInfo['phone']" *ngIf="originalUserInfo['phone'] != userInfo['phone']">
+                                    <button mat-icon-button color="accent" (click)="_wa.userInfo['phone'] = _wa.originalUserInfo['phone']" *ngIf="_wa.originalUserInfo['phone'] != _wa.userInfo['phone']">
                                         <mat-icon>close</mat-icon>
                                     </button>
-                                    <button mat-icon-button color="primary" (click)="saveUserInfo('phone_number')" *ngIf="originalUserInfo['phone'] != userInfo['phone']">
+                                    <button mat-icon-button color="primary" (click)="_wa.saveUserInfo('phone_number')" *ngIf="_wa.originalUserInfo['phone'] != _wa.userInfo['phone']">
                                         <mat-icon>save</mat-icon>
                                     </button>
                                 </ng-container>
                                 <br>
                                 <mat-form-field class="formInfo">
-                                    <input matInput [(ngModel)]="userInfo['user_fields']['whatsapp']" placeholder="Whatsapp" #whatsapp>
+                                    <input matInput [(ngModel)]="_wa.userInfo['user_fields']['whatsapp']" placeholder="Whatsapp" #whatsapp>
                                 </mat-form-field>
                                 <ng-container *ngIf="loading['whatsapp']">
                                     <mat-progress-bar mode="buffer"></mat-progress-bar>
                                 </ng-container>
                                 <ng-container *ngIf="!loading['whatsapp']">
-                                    <button mat-icon-button color="accent" (click)="userInfo['user_fields']['whatsapp'] = originalUserInfo['user_fields']['whatsapp']" *ngIf="originalUserInfo['user_fields']['whatsapp'] != userInfo['user_fields']['whatsapp']">
+                                    <button mat-icon-button color="accent" (click)="_wa.userInfo['user_fields']['whatsapp'] = _wa.originalUserInfo['user_fields']['whatsapp']" *ngIf="_wa.originalUserInfo['user_fields']['whatsapp'] != _wa.userInfo['user_fields']['whatsapp']">
                                         <mat-icon>close</mat-icon>
                                     </button>
-                                    <button mat-icon-button color="primary" (click)="saveUserInfo('user_fields')" *ngIf="originalUserInfo['user_fields']['whatsapp'] != userInfo['user_fields']['whatsapp']">
+                                    <button mat-icon-button color="primary" (click)="_wa.saveUserInfo('user_fields')" *ngIf="_wa.originalUserInfo['user_fields']['whatsapp'] != _wa.userInfo['user_fields']['whatsapp']">
                                         <mat-icon>save</mat-icon>
                                     </button>
                                 </ng-container>
@@ -102,17 +102,17 @@
                     </mat-tab>
                     <mat-tab>
                         <ng-template mat-tab-label>
-                            <span [matBadge]="rsvHistory.length" matBadgeOverlap="false">Reservas</span>
+                            <span [matBadge]="_wa.rsvHistory.length" matBadgeOverlap="false">Reservas</span>
                         </ng-template>
-                        <div class="container d-flex justify-content-center" *ngIf="loading['rsvHistory']">
+                        <div class="container d-flex justify-content-center" *ngIf="_wa.loadingInfo">
                             <mat-progress-bar mode="buffer"></mat-progress-bar>
                         </div>
-                        <div class="container p-2" style="max-height: 465px; overflow: auto;" *ngIf="!loading['rsvHistory']">
-                            <div class="alert alert-primary" role="alert" *ngIf="rsvHistory.length == 0">
+                        <div class="container p-2" style="max-height: 465px; overflow: auto;" *ngIf="!_wa.loadingInfo">
+                            <div class="alert alert-primary" role="alert" *ngIf="_wa.rsvHistory.length == 0">
                                 Este cliente no cuenta con reservas en CyC
                             </div>
-                            <ul class="p-0" *ngIf="rsvHistory.length > 0">
-                                <li class="d-flex justify-content-lg-between m-1" *ngFor="let r of rsvHistory">
+                            <ul class="p-0" *ngIf="_wa.rsvHistory.length > 0">
+                                <li class="d-flex justify-content-lg-between m-1" *ngFor="let r of _wa.rsvHistory">
                                     <mat-chip-list aria-label="Fish selection">
                                         <mat-chip>{{ r.ml }}
                                         </mat-chip>

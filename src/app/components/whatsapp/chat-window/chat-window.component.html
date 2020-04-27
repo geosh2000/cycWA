@@ -2,7 +2,7 @@
     <a href="#bottomTgt" id="link" hidden>Link</a>
     <div class="container p-0 m-0" style="padding-bottom: 5rem!important; min-height: 660px; overflow: hidden" [style.height.px]="chatHeight" id="chatWdw">
 
-        <div class="cht" (scroll)="onScroll($event)" [style.height.px]="windowHeight" id="chatWindowCyc">
+        <div class="cht" (scroll)="onScroll($event)" [style.height.px]="windowHeight" [style.min-jeight.px]="400" id="chatWindowCyc">
             <ng-container>
                 <ng-container *ngFor="let d of _wa.chatMsgs | keys">
                     <div class="d-flex justify-content-center">

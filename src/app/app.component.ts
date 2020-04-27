@@ -7,6 +7,7 @@ import * as moment from 'moment-timezone';
 import * as Globals from './globals';
 import { InfoClienteComponent } from './components/whatsapp/info-cliente/info-cliente.component';
 import { AssignTicketComponent } from './components/whatsapp/assign-ticket/assign-ticket.component';
+import { WriteMsgComponent } from './components/whatsapp/write-msg/write-msg.component';
 
 @Component({
   selector: 'app-root',
@@ -18,6 +19,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   @ViewChild('chatColumn', {static: false}) _mainColumn:ElementRef;
   @ViewChild(InfoClienteComponent, {static: false}) _info:InfoClienteComponent
   @ViewChild(AssignTicketComponent, {static: false}) _assign:AssignTicketComponent
+  @ViewChild(WriteMsgComponent, {static: false}) _write:WriteMsgComponent
 
   title = 'cycWA';
   chatSize:any = 200
@@ -67,7 +69,6 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   openModal( e ){
-    console.log(e)
     switch(e){
       case 'info':
         this._info.openInfo()

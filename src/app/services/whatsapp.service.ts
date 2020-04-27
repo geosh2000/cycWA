@@ -48,6 +48,13 @@ export class WhatsappService {
   // Layout
   zdesk = false
 
+  // INFO
+  userInfo = {}
+  originalUserInfo = {}
+  rsvHistory = []
+  loadingInfo = false
+  loadingUI = false
+
   constructor( private _init:InitService, private _api:ApiService, private orderPipe: OrderPipe, private toastr:ToastrService ) {
     this.zdesk = Globals.ZDESK
   }
@@ -167,6 +174,13 @@ export class WhatsappService {
                   this.chatInfo['rqId'] = res['data'][0]['zdId']
                   this.chatInfo['agentName'] = res['data'][0]['asignado']
                   this.chatInfo['ticketId'] = loc
+
+                  if( ft ){
+                    this.getUserInfo()
+                    this.rsvHistory = []
+                    this.userInfo = {}
+                    this.originalUserInfo = {}
+                  }
 
                   if( this._init.currentUser['hcInfo']['zdId'] == this.assignee && isFocused){
                     this.clearNotif(loc)
@@ -350,4 +364,84 @@ export class WhatsappService {
                 });
   }
 
+  getUserInfo( zdId = this.chatInfo['rqId'] ){
+    this.loadingInfo = true;
+    this.userInfo = {}
+    this.originalUserInfo = {}
+
+    this._api.restfulGet( zdId, 'Calls/showUser' )
+                .subscribe( res => {
+
+                  // console.log(res['data']['data'])
+
+                  this.loadingInfo = false;
+                  this.userInfo['name'] = res['data']['data']['user']['name']
+                  this.userInfo['email'] = res['data']['data']['user']['email']
+                  this.userInfo['phone'] = res['data']['data']['user']['phone']
+                  this.userInfo['rqId'] = zdId
+                  this.userInfo['user_fields'] = res['data']['data']['user']['user_fields']
+
+                  if( res['data']['data']['user']['user_fields'] && res['data']['data']['user']['user_fields'] ){
+                    this.userInfo['whatsapp'] = res['data']['data']['user']['user_fields']['whatsapp'] ? res['data']['data']['user']['user_fields']['whatsapp'] : ''
+                  }else{
+                    this.userInfo['whatsapp'] = ''
+                  }
+
+                  this.originalUserInfo = JSON.parse(JSON.stringify(this.userInfo))
+                  this.getRsvHistory()
+                  // console.log(res)
+
+
+                }, err => {
+                  this.loadingInfo = false;
+
+                  const error = err.error;
+                  this.toastr.error( error.msg, err.status );
+                  console.error(err.statusText, error.msg);
+
+                });
+  }
+
+  getRsvHistory( zdClientId = this.chatInfo['rqId'] ){
+
+    this.loadingInfo = true
+    this.rsvHistory = []
+
+    this._api.restfulGet( zdClientId, 'Rsv/getRsvHistory' )
+                .subscribe( res => {
+
+                  this.loadingInfo = false;
+                  this.rsvHistory = res['data']
+
+                }, err => {
+                  this.loadingInfo = false;
+
+                  const error = err.error;
+                  this.toastr.error( error.msg, err.status );
+                  console.error(err.statusText, error.msg);
+
+                });
+  }
+
+  saveUserInfo(f){
+    this.loadingUI = true;
+
+    this._api.restfulPut( {values: this.userInfo, field: f}, 'Calls/updateUserV2' )
+                .subscribe( res => {
+
+                  this.loadingUI = false;
+                  this.getUserInfo()
+
+                }, err => {
+                  this.loadingUI = false;
+
+                  const error = err.error;
+                  this.toastr.error( error.msg, err.status );
+                  console.error(err.statusText, error.msg);
+
+                });
+  }
+
 }
+
+
