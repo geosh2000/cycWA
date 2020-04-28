@@ -16,6 +16,7 @@ export class WriteMsgComponent implements OnInit {
   loading:Object = {}
   showEmoji = false
   templates = {}
+  idiomas =[]
 
   constructor( public _wa:WhatsappService, private _init:InitService, private _api:ApiService, private toastr:ToastrService ) { }
 
@@ -119,11 +120,18 @@ export class WriteMsgComponent implements OnInit {
                   let tmpl = {}
 
                   for( let c of t ){
-                    if( tmpl[c['categoria']] ){
-                      tmpl[c['categoria']].push({titulo: c['titulo'], texto: c['texto']})
+
+                    if(  tmpl[c['idioma']] ){
+                      if( tmpl[c['idioma']][c['categoria']] ){
+                        tmpl[c['idioma']][c['categoria']].push({titulo: c['titulo'], texto: c['texto']})
+                      }else{
+                        tmpl[c['idioma']][c['categoria']] = [{titulo: c['titulo'], texto: c['texto']}]
+                      }
                     }else{
-                      tmpl[c['categoria']] = [{titulo: c['titulo'], texto: c['texto']}]
+                      this.idiomas.push(c['idioma'])
+                      tmpl[c['idioma']] = { [c['categoria']]: [{titulo: c['titulo'], texto: c['texto']}] }
                     }
+
                   }
 
                   this.templates = tmpl

@@ -33,8 +33,6 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(){
     if( this._wa.zdesk ){
-      console.log(this._mainColumn.nativeElement.clientWidth)
-
       this.resizeChat()
     }
   }

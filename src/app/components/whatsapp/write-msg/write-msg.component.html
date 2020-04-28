@@ -24,16 +24,24 @@
 <mat-menu #templatesMenu="matMenu">
     <mat-progress-bar color="accent" mode="buffer" *ngIf="loading['templates']"></mat-progress-bar>
     <ng-container *ngIf="!loading['templates']">
-        <ng-container *ngFor="let cat of templates | keys">
-            <button mat-menu-item [matMenuTriggerFor]="subMenu" [matMenuTriggerData]="{items: templates[cat]}">
+        <ng-container *ngFor="let idioma of templates | keys">
+            <button mat-menu-item [matMenuTriggerFor]="subMenu" [matMenuTriggerData]="{cats: templates[idioma]}">
                 <mat-icon>speaker_notes</mat-icon>
-                <span>{{ cat }}</span>
+                <span>{{ idioma }}</span>
             </button>
         </ng-container>
     </ng-container>
 </mat-menu>
 
 <mat-menu #subMenu="matMenu">
+    <ng-template matMenuContent let-categories="cats">
+        <ng-container *ngFor="let c of categories | keys">
+            <button mat-menu-item [matMenuTriggerFor]="itemsMenu" [matMenuTriggerData]="{items: categories[c]}">{{ c }}</button>
+        </ng-container>
+    </ng-template>
+</mat-menu>
+
+<mat-menu #itemsMenu="matMenu">
     <ng-template matMenuContent let-items="items">
         <ng-container *ngFor="let i of items">
             <button mat-menu-item (click)="printTemplate(i['texto'])">{{i['titulo']}}</button>
