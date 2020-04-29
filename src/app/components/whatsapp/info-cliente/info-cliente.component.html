@@ -8,7 +8,7 @@
           </button>
             </div>
             <div class="modal-body">
-                <mat-tab-group (selectedTabChange)="tabSelected($event)">
+                <mat-tab-group (selectedTabChange)="tabSelected($event)" *ngIf="!_wa.isDpl">
                     <mat-tab label="Perfil">
                         <div class="container d-flex justify-content-center" *ngIf="_wa.loadingInfo || _wa.loadingUI">
                             <mat-progress-bar mode="buffer"></mat-progress-bar>
@@ -125,7 +125,18 @@
                         </div>
                     </mat-tab>
                 </mat-tab-group>
-
+                <div class="alert alert-warning" role="alert" *ngIf="_wa.isDpl">
+                    <p>Los datos se encuentran duplicados con el usuario siguiente:</p>
+                    <p>Nombre: {{ _wa.dpl['name'] }}</p>
+                    <p>Correo: {{ _wa.dpl['email'] }}</p>
+                    <p>Tel: {{ _wa.dpl['phone'] }}</p>
+                    <br>
+                    <p>Deseas fusionarlos? <button mat-icon-button color='warn' (click)="_wa.isDpl = false">
+                        <mat-icon>close</mat-icon>
+                    </button><button mat-icon-button color='primary' (click)="_wa.mergeUsers(_wa.userInfo['rqId'],_wa.dpl['id'])">
+                        <mat-icon>check</mat-icon>
+                    </button></p>
+                </div>
             </div>
         </div>
     </div>

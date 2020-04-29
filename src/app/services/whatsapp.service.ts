@@ -31,6 +31,7 @@ export class WhatsappService {
   tickets = []
   reloadTickets = true
   selectedFilter:any
+  chatLoading = false
 
   // Chat Window
   chatMsgs = {}
@@ -40,6 +41,8 @@ export class WhatsappService {
   bottomFlag = true
   scr = 0
   assignee:any
+  actualTkt:any
+  lastIsIn:any
 
   // Attachments
   imageForm: FormGroup
@@ -54,12 +57,16 @@ export class WhatsappService {
   rsvHistory = []
   loadingInfo = false
   loadingUI = false
+  dpl = {}
+  isDpl = false
 
   constructor( private _init:InitService, private _api:ApiService, private orderPipe: OrderPipe, private toastr:ToastrService ) {
     this.zdesk = Globals.ZDESK
   }
 
-  getTickets( s = this._init.currentUser['hcInfo']['zdId'], to = this.reloadTickets ){
+  // CAMBIAR s = this._init.currentUser['hcInfo']['zdId'] para "mis conversaciones" por default
+
+  getTickets( s = '1', to = this.reloadTickets ){
     // console.log('run tickets start')
     this.selectedFilter = s
 
@@ -70,11 +77,11 @@ export class WhatsappService {
 
     switch( s ){
       case '0':
-      case 0:
+      // case 0:
         this.title = 'Sin Asignar'
         break
       case '1':
-      case 1:
+      // case 1:
         this.title = 'Todas las conversaciones'
         break
       default:
@@ -145,6 +152,8 @@ export class WhatsappService {
 
   getConv( loc, ft = false, to = this.reloadChat, rl = true  ){
 
+    this.actualTkt = loc
+
     if( !this.bottomFlag ){
       this.newMsgs = 0
     }
@@ -153,6 +162,7 @@ export class WhatsappService {
 
     if( ft ){
       this.chatMsgs = {}
+      this.chatLoading = true
     }
 
     // dummy element
@@ -255,6 +265,8 @@ export class WhatsappService {
                     },10000)
                   }
 
+                  this.chatLoading = false
+
                 }, err => {
                   if( rl ){
                     this.timeout['chat'] = setTimeout( () => {
@@ -263,6 +275,7 @@ export class WhatsappService {
                   }
 
                   this.loading = false;
+                  this.chatLoading = false
 
                   const error = err.error;
                   this.toastr.error( error.msg, err.status );
@@ -430,10 +443,105 @@ export class WhatsappService {
                 .subscribe( res => {
 
                   this.loadingUI = false;
-                  this.getUserInfo()
+
+                  let rsp = res['rsp']
+
+                  if( rsp['response'] != 200 ){
+
+                    let err = rsp['data']
+                    let msg = ''
+                    let errType = ''
+
+                    for( let fld in err['details'] ){
+                      if( err['details'].hasOwnProperty(fld) ){
+                        for( let e of err['details'][fld] ){
+                          msg += ` ${e['description']} (${e['error']})`
+                          errType = e['error']
+                        }
+                      }
+                    }
+
+                    if( errType == 'DuplicateValue' ){
+                      this.isDpl = true
+                      this.dpl = err['user']
+                    }
+
+                    this.toastr.error( msg, err['description'] );
+                  }else{
+                    this.toastr.success( 'Información guardada correctamente', 'Guardado' );
+                    this.getUserInfo()
+                  }
+
 
                 }, err => {
                   this.loadingUI = false;
+
+                  const error = err.error;
+                  this.toastr.error( error.msg, err.status );
+                  console.error(err.statusText, error.msg);
+
+                });
+  }
+
+  markAsRead( d ){
+    this.loading = true;
+
+    this._api.restfulPut( {date: d, ticket: this.actualTkt}, 'Whatsapp/markAsRead' )
+                .subscribe( res => {
+
+                  this.loading = false;
+                  this.getTickets(this.selectedFilter)
+                  this.lastIsIn = res['data']
+
+                }, err => {
+                  this.loading = false;
+
+                  const error = err.error;
+                  this.toastr.error( error.msg, err.status );
+                  console.error(err.statusText, error.msg);
+
+                });
+  }
+
+  markAsUnread(){
+    this.loading = true;
+
+    this._api.restfulPut( {ticket: this.actualTkt}, 'Whatsapp/markAsUnread' )
+                .subscribe( res => {
+
+                  this.loading = false;
+                  this.getTickets(this.selectedFilter)
+                  this.lastIsIn = 1
+
+                }, err => {
+                  this.loading = false;
+
+                  const error = err.error;
+                  this.toastr.error( error.msg, err.status );
+                  console.error(err.statusText, error.msg);
+
+                });
+  }
+
+  mergeUsers( c, d ){
+    this.loading = true
+    this._api.restfulPut( {actual: c, dest: d, userFields: this.userInfo['user_fields'], ticket: this.actualTkt }, 'Whatsapp/mergeUsers' )
+                .subscribe( res => {
+
+                  this.loading = false;
+
+                  if( res['data']['response'] == 200 ){
+                    this.getUserInfo(d)
+                    this.toastr.success('Usuarios fusionados correctamente', 'Fusión Realizada')
+                    this.isDpl = false
+                    this.dpl = []
+                  }else{
+                    this.toastr.error(res['data']['data']['error'], 'Error')
+                  }
+
+
+                }, err => {
+                  this.loading = false;
 
                   const error = err.error;
                   this.toastr.error( error.msg, err.status );

@@ -4,11 +4,11 @@
 
         <div class="cht" (scroll)="onScroll($event)" [style.height.px]="windowHeight" [style.min-jeight.px]="400" id="chatWindowCyc">
             <ng-container>
-                <ng-container *ngFor="let d of _wa.chatMsgs | keys">
+                <ng-container *ngFor="let d of _wa.chatMsgs | keys, index as x">
                     <div class="d-flex justify-content-center">
                         <div class="dayDivider">{{ d }}</div>
                     </div>
-                    <div [ngClass]="{'inMsg': c['isIn'] == 1, 'outMsg': c['isIn'] == 0}" *ngFor="let c of _wa.chatMsgs[d]">
+                    <div [ngClass]="{'inMsg': c['isIn'] == 1, 'outMsg': c['isIn'] == 0}" *ngFor="let c of _wa.chatMsgs[d], index as z">
 
                         <div class="msgFrame pr-4" *ngIf="c['attachments'].length > 0">
                             <div class="p-0 m-0 d-flex justify-content-center" [ngSwitch]="c['attachments'][0]['content_type']">
@@ -25,7 +25,7 @@
                                     <mat-basic-audio-player [audioUrl]="c['attachments'][0]['content_url']" title="audio" [displayTitle]="false" [displayVolumeControls]="false"></mat-basic-audio-player>
                                 </div>
                                 <div *ngSwitchCase="'application/pdf'">
-                                    <a [href]="c['attachments'][0]['content_url']" target="_blank"><img src="/assets/pdf.png" width="65"></a>
+                                    <a [href]="c['attachments'][0]['content_url']" target="_blank"><img src="/wazd/assets/pdf.png" width="65"></a>
                                 </div>
                                 <div *ngSwitchDefault>
                                     <span class="font-weight-light font-italic">Archivo no soportado ({{c['attachments'][0]['content_type']}})</span>
@@ -34,6 +34,14 @@
                         </div>
                         <!-- <div class="msgFrame" *ngIf="c['plain'] != 'The user has sent an attachment'">{{ c['plain'] }}</div> -->
                         <div class="msgFrame" [innerHTML]="c['comment']" *ngIf="c['plain'] != 'The user has sent an attachment'"></div>
+                        <div *ngIf="x == ((_wa.chatMsgs | keys).length - 1) && z == (_wa.chatMsgs[d].length - 1) && c['isIn'] == 1">
+                            <button mat-icon-button color='warn' (click)="_wa.markAsRead(c['dt'])" *ngIf="_wa.lastIsIn == '1'">
+                                <mat-icon>drafts</mat-icon> Marcar como leido
+                            </button>
+                            <button mat-icon-button color='warn' (click)="_wa.markAsUnread()" *ngIf="_wa.lastIsIn == '0'">
+                                <mat-icon>markunread</mat-icon> Marcar como NO leido
+                            </button>
+                        </div>
                         <div class="msgTime"><span class="text-primary mr-2">{{ c['agent'] }}</span>{{ formatTime(c['dt'], 'HH:mm') }}</div>
                     </div>
                 </ng-container>

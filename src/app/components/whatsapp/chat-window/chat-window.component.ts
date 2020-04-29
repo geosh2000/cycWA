@@ -66,9 +66,9 @@ export class ChatWindowComponent implements OnInit, OnDestroy {
   formatTime( t, f ){
     if( moment(t) < moment(moment().format('YYYY-MM-DD')) ){
       if( moment(t).format('YYYY-MM-DD') == moment().subtract(1,'days').format('YYYY-MM-DD') ){
-        return 'ayer';
+        return 'ayer '+moment(t).format(f);
       }else{
-        return moment(t).format('DD-MMM')
+        return moment(t).format('DD-MMM '+f)
       }
     }
 

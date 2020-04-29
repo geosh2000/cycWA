@@ -18,6 +18,7 @@ export class ConvListComponent implements OnInit, OnDestroy {
   timeout:any
   windowHeight = 500
   resizeTo:any
+  dummy = true
 
   constructor(
                 private activatedRoute: ActivatedRoute,
@@ -70,15 +71,20 @@ export class ConvListComponent implements OnInit, OnDestroy {
   }
 
   formatTime( t, f ){
+
+    let r
+
     if( moment(t) < moment(moment().format('YYYY-MM-DD')) ){
       if( moment(t).format('YYYY-MM-DD') == moment().subtract(1,'days').format('YYYY-MM-DD') ){
-        return 'ayer';
+        r = '<span class="text-danger">' + 'ayer '+moment(t).format(f) + '</span>'
       }else{
-        return moment(t).format('DD-MMM')
+        r = '<span class="text-danger">' + moment(t).format('DD-MMM '+f) + '</span>'
       }
+    }else{
+      r = '<span class="text-success">' + moment(t).format(f) + '</span>'
     }
 
-    return moment(t).format(f)
+    return r
   }
 
   // setConv(id, ag, e){
@@ -116,6 +122,7 @@ export class ConvListComponent implements OnInit, OnDestroy {
       requester: t['reqName'],
       agentName: t['agentName']
     }
+    this._wa.lastIsIn = t['lastIsIn']
     this._wa.assignee = t['assignee']
 
     if( this._wa.zdesk ){
@@ -125,4 +132,7 @@ export class ConvListComponent implements OnInit, OnDestroy {
     }
   }
 
+  waitAlert( t ){
+    return moment(t) < moment().subtract(5, 'minutes')
+  }
 }
