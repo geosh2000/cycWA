@@ -130,7 +130,7 @@ export class WhatsappService {
                     },10000)
                   }
 
-                  // console.log('run tickets end width reload flag: ', this.reloadTickets)
+                  // console.log(this._init.currentUser)
 
                 }, err => {
                   this.loading = false;
@@ -176,6 +176,10 @@ export class WhatsappService {
 
     this._api.restfulGet( loc, 'Whatsapp/getChat' )
                 .subscribe( res => {
+
+                  if( loc != this.actualTkt ){
+                    return false
+                  }
 
                   this.loading = false;
                   // this.title = res['data'][0]['reqName']
@@ -416,6 +420,10 @@ export class WhatsappService {
   }
 
   getRsvHistory( zdClientId = this.chatInfo['rqId'] ){
+
+    if( !zdClientId ){
+      return false
+    }
 
     this.loadingInfo = true
     this.rsvHistory = []

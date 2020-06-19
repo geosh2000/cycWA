@@ -120,7 +120,8 @@ export class ConvListComponent implements OnInit, OnDestroy {
   goToChat( t ){
     this._wa.chatInfo = {
       requester: t['reqName'],
-      agentName: t['agentName']
+      agentName: t['agentName'],
+      ticketId: t['ticketId']
     }
     this._wa.lastIsIn = t['lastIsIn']
     this._wa.assignee = t['assignee']

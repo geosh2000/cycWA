@@ -4,7 +4,7 @@
     </div>
     <mat-list *ngIf="_wa.tickets.length > 0">
         <ng-container *ngFor="let c of _wa.tickets">
-            <mat-list-item class="itemList" (mouseenter)="mOver($event)" (mouseleave)="mLeave($event)" (click)="_wa.chatLoading ? dummy = true : goToChat(c)">
+            <mat-list-item class="itemList" [ngClass]="{'selectedTkt': c['ticketId'] == _wa.actualTkt}" (mouseenter)="mOver($event)" (mouseleave)="mLeave($event)" (click)="_wa.chatLoading ? dummy = true : goToChat(c)">
                 <div class="p-1 row m-0" style='width: 100%; position: relative'>
                     <div class="col-10 p-0">
                         <h6 class="text-truncate" [ngClass]="{'text-success': c['lastIsIn'] == 1}">

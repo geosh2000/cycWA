@@ -3,6 +3,7 @@ import { InitService, ApiService, WhatsappService } from '../../../services/serv
 
 import * as moment from 'moment-timezone';
 import { ToastrService } from 'ngx-toastr';
+import { OrderPipe } from 'ngx-order-pipe';
 declare var jQuery: any;
 
 @Component({
@@ -18,7 +19,7 @@ export class WriteMsgComponent implements OnInit {
   templates = {}
   idiomas =[]
 
-  constructor( public _wa:WhatsappService, private _init:InitService, private _api:ApiService, private toastr:ToastrService ) { }
+  constructor( public _wa:WhatsappService, private _init:InitService, private _api:ApiService, private toastr:ToastrService, private order:OrderPipe ) { }
 
   ngOnInit() {
   }
@@ -84,6 +85,21 @@ export class WriteMsgComponent implements OnInit {
                   jQuery('#chatWindowCyc').innerHeight(window.innerHeight -  jQuery('#topMenu').innerHeight() - jQuery('#bottomBar').innerHeight())
                   this._wa.scrollBottom()
 
+                  this._wa.getTickets( this._wa.selectedFilter )
+
+                  // for( let c of this._wa.tickets ){
+                  //   if( c['ticketId'] == t ){
+                  //     c['lastIsIn'] = 0;
+                  //     c['lastConv'] = params.msg
+                  //     c['lastMsg'] = moment().format('YYYY-MM-DD HH:mm:ss')
+
+                  //     let tktsO = this.order.transform(this._wa.tickets, 'lastMsg')
+                  //     let tkts = this.order.transform(tktsO, 'lastIsIn',true)
+                  //     this._wa.tickets = tkts
+                  //     return true
+                  //   }
+                  // }
+
                 }, err => {
 
                   this.loading['reading'] = false;
@@ -102,7 +118,22 @@ export class WriteMsgComponent implements OnInit {
     console.log(e)
   }
 
-  printTemplate( t ){
+  printTemplate( i ){
+
+    let dynamic:any
+    let t = i['texto']
+
+    if( i['dynamicFields'] ){
+      dynamic = JSON.parse(i['dynamicFields'])
+
+      for(let p in dynamic){
+        if( dynamic.hasOwnProperty(p) ){
+          console.log(dynamic[p], p)
+          t = t.replace('@'+p, this._init.currentUser.hcInfo[dynamic[p]])
+        }
+      }
+    }
+
     jQuery('#note').val( this.msgSend += t )
     this.auto_grow( jQuery('#note').val() )
     jQuery('#note').focus()
@@ -123,13 +154,13 @@ export class WriteMsgComponent implements OnInit {
 
                     if(  tmpl[c['idioma']] ){
                       if( tmpl[c['idioma']][c['categoria']] ){
-                        tmpl[c['idioma']][c['categoria']].push({titulo: c['titulo'], texto: c['texto']})
+                        tmpl[c['idioma']][c['categoria']].push({titulo: c['titulo'], texto: c['texto'], dynamicFields: c['dynamicFields']})
                       }else{
-                        tmpl[c['idioma']][c['categoria']] = [{titulo: c['titulo'], texto: c['texto']}]
+                        tmpl[c['idioma']][c['categoria']] = [{titulo: c['titulo'], texto: c['texto'], dynamicFields: c['dynamicFields']}]
                       }
                     }else{
                       this.idiomas.push(c['idioma'])
-                      tmpl[c['idioma']] = { [c['categoria']]: [{titulo: c['titulo'], texto: c['texto']}] }
+                      tmpl[c['idioma']] = { [c['categoria']]: [{titulo: c['titulo'], texto: c['texto'], dynamicFields: c['dynamicFields']}] }
                     }
 
                   }

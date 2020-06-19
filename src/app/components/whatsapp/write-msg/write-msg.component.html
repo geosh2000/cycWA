@@ -44,7 +44,7 @@
 <mat-menu #itemsMenu="matMenu">
     <ng-template matMenuContent let-items="items">
         <ng-container *ngFor="let i of items">
-            <button mat-menu-item (click)="printTemplate(i['texto'])">{{i['titulo']}}</button>
+            <button mat-menu-item (click)="printTemplate(i)">{{i['titulo']}}</button>
         </ng-container>
     </ng-template>
 </mat-menu>

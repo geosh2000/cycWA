@@ -21,13 +21,13 @@
             <app-navbar (_link)="openModal($event)" tipo="conv"></app-navbar>
             <div class='whiteBg'>
                 <div class="mainWindow">
-                    <app-conv-list></app-conv-list>
+                    <app-conv-list *ngIf="this._token.token"></app-conv-list>
                 </div>
             </div>
         </div>
         <div class='col-7 p-0' #chatColumn>
             <app-navbar (_link)="openModal($event)" tipo="chat" [idiomas]="_info ? _info.idiomas : []"></app-navbar>
-            <div class='parentWindow'>
+            <div class='parentWindow' *ngIf="this._token.token">
                 <div class="mainWindow">
                     <app-chat-window></app-chat-window>
                 </div>
@@ -37,15 +37,15 @@
                     <mat-icon>keyboard_arrow_down</mat-icon>
                 </button>
             </div>
-            <div class="footerComponent p-1" [style.width.px]="chatSize" id='bottomBar'>
+            <div class="footerComponent p-1" [style.width.px]="chatSize" id='bottomBar' *ngIf="this._token.token">
                 <app-write-msg></app-write-msg>
             </div>
         </div>
     </div>
 
 </div>
-<app-assign-ticket></app-assign-ticket>
-<app-info-cliente></app-info-cliente>
+<app-assign-ticket *ngIf="this._token.token"></app-assign-ticket>
+<app-info-cliente *ngIf="this._token.token"></app-info-cliente>
 <app-login></app-login>
-<app-logout></app-logout>
-<app-close-ticket></app-close-ticket>
+<app-logout *ngIf="this._token.token"></app-logout>
+<app-close-ticket *ngIf="this._token.token"></app-close-ticket>

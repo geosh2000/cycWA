@@ -8,6 +8,7 @@ import * as Globals from './globals';
 import { InfoClienteComponent } from './components/whatsapp/info-cliente/info-cliente.component';
 import { AssignTicketComponent } from './components/whatsapp/assign-ticket/assign-ticket.component';
 import { WriteMsgComponent } from './components/whatsapp/write-msg/write-msg.component';
+import { InitService } from 'src/app/services/init.service';
 
 @Component({
   selector: 'app-root',
@@ -25,7 +26,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   chatSize:any = 200
   resizeTo:any
 
-  constructor( public _token:TokenCheckService, public _route:Router, public _wa:WhatsappService) {
+  constructor( public _init:InitService, public _token:TokenCheckService, public _route:Router, public _wa:WhatsappService) {
     this._wa.zdesk = Globals.ZDESK
   }
 

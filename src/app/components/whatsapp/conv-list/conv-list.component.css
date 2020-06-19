@@ -1,3 +1,7 @@
+.selectedTkt {
+    background: khaki;
+}
+
 .staticBg {
     background: content-box;
 }
