@@ -4,10 +4,11 @@
         <mat-icon>sentiment_satisfied_alt</mat-icon>
     </button> -->
 
-    <div class="alert alert-warning" role="alert" *ngIf="_wa.userInfo['user_fields'] && _wa.userInfo['user_fields']['idioma_cliente'] == null">
+    <!-- <div class="alert alert-warning" role="alert" *ngIf="_wa.userInfo['user_fields'] && _wa.userInfo['user_fields']['idioma_cliente'] == null">
         Define un idioma en la barra superior para habilitar el cuadro de escritura
-    </div>
-    <ng-container *ngIf="_wa.userInfo['user_fields'] && _wa.userInfo['user_fields']['idioma_cliente'] != null">
+    </div> -->
+    <!-- <ng-container *ngIf="_wa.userInfo['user_fields'] && _wa.userInfo['user_fields']['idioma_cliente'] != null"> -->
+    <ng-container>
         <textarea #note id='note' rows="1" (keyup)="auto_grow(note.value)" [readonly]="_wa.chatMsgs == {}"></textarea>
         <button mat-icon-button [matMenuTriggerFor]="templatesMenu" (click)="getTemplates()" [disabled]="_wa.chatMsgs == {}">
                 <mat-icon>subject</mat-icon>

@@ -127,7 +127,7 @@ export class WhatsappService {
                     // console.log('run tickets program next run')
                     this.timeout['tickets'] = setTimeout( () => {
                       this.getTickets( s )
-                    },10000)
+                    },20000)
                   }
 
                   // console.log(this._init.currentUser)
@@ -140,7 +140,7 @@ export class WhatsappService {
                   if( to ){
                     this.timeout['tickets'] = setTimeout( () => {
                       this.getTickets( s )
-                    },10000)
+                    },20000)
                   }
 
                   const error = err.error;
@@ -190,7 +190,7 @@ export class WhatsappService {
                   this.chatInfo['ticketId'] = loc
 
                   if( ft ){
-                    this.getUserInfo()
+                    // this.getUserInfo()
                     this.rsvHistory = []
                     this.userInfo = {}
                     this.originalUserInfo = {}
@@ -266,7 +266,7 @@ export class WhatsappService {
                   if( to ){
                     this.timeout['chat'] = setTimeout( () => {
                       this.getConv( loc )
-                    },10000)
+                    },20000)
                   }
 
                   this.chatLoading = false
@@ -275,7 +275,7 @@ export class WhatsappService {
                   if( rl ){
                     this.timeout['chat'] = setTimeout( () => {
                       this.getConv( loc )
-                    },10000)
+                    },20000)
                   }
 
                   this.loading = false;
