@@ -4,6 +4,9 @@ import { InitService, ApiService, WhatsappService } from '../../../services/serv
 
 import * as moment from 'moment-timezone';
 import { ToastrService } from 'ngx-toastr';
+import { ChatService } from '../../../services/chat.service';
+import { Subscription, Observable } from 'rxjs';
+import { WebsocketService } from '../../../services/websocket.service';
 declare var jQuery: any;
 
 @Component({
@@ -19,6 +22,7 @@ export class ConvListComponent implements OnInit, OnDestroy {
   windowHeight = 500
   resizeTo:any
   dummy = true
+  newConvsObs: Subscription
 
   constructor(
                 private activatedRoute: ActivatedRoute,
@@ -27,6 +31,8 @@ export class ConvListComponent implements OnInit, OnDestroy {
                 public toastr:ToastrService,
                 private _api:ApiService,
                 public _wa:WhatsappService,
+                public chat: ChatService,
+                public ws: WebsocketService
               ) {
 
     this.activatedRoute.params.subscribe( params => {
@@ -48,10 +54,18 @@ export class ConvListComponent implements OnInit, OnDestroy {
     this._wa.lastUrl = this._route.url
 
     this.resizeChat()
+
+    this.newConvsObs = this.chat.getNewWhatsapps().subscribe(  msg => {
+      // console.log( msg );
+      this._wa.indivList( msg['ticket'], msg['data'] )
+    });
+
   }
 
   ngOnDestroy(){
     this._wa.reloadTickets = false
+
+    this.newConvsObs.unsubscribe();
     jQuery('.modal').modal('hide')
   }
 
@@ -127,6 +141,15 @@ export class ConvListComponent implements OnInit, OnDestroy {
 
     if( this._wa.zdesk ){
       this._wa.getConv( t['ticketId'], true )
+      this.ws.setTicket( t['ticketId'] )
+      if( this._wa.ticketObs ){
+        this._wa.ticketObs.unsubscribe()
+      }
+      this._wa.ticketObs = this.chat.notifyNewMsgTicket( t['ticketId'] ).subscribe(
+        msg => {
+          console.log(msg)
+          this._wa.getConv( t['ticketId'], true )
+        })
     }else{
       this._route.navigate([`/chat/${t['ticketId']}`]);
     }

@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { WhatsappComponent } from './components/whatsapp/whatsapp.component';
 import { ConvListComponent } from './components/whatsapp/conv-list/conv-list.component';
 import { ChatWindowComponent } from './components/whatsapp/chat-window/chat-window.component';
+import { ListaClientesComponent } from './components/lista-clientes/lista-clientes.component';
 
 
 const routes: Routes = [
@@ -15,6 +16,8 @@ const routes: Routes = [
 
   // zendeskInit
   { path: 'whatsapp/:zdUser', component: ConvListComponent },
+
+  { path: 'clientes', component: ListaClientesComponent },
 ];
 
 @NgModule({

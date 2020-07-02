@@ -1,0 +1,8 @@
+<h1>Usuarios</h1>
+<hr>
+
+<ul class="list-group">
+    <li class="list-group-item" *ngFor="let usuario of usuariosActivosObs | async">
+        {{ usuario | json }}
+    </li>
+</ul>

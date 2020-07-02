@@ -10,11 +10,14 @@ import * as moment from 'moment-timezone';
 import { FormGroup } from '@angular/forms';
 
 import { Howl } from 'howler';
+import { Subscription } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WhatsappService {
+
+  ticketObs: Subscription
 
   sound = new Howl({
     src: ['/wazd/assets/WhatsApp.mp3'],
@@ -125,9 +128,9 @@ export class WhatsappService {
 
                   if( to || this.zdesk ){
                     // console.log('run tickets program next run')
-                    this.timeout['tickets'] = setTimeout( () => {
-                      this.getTickets( s )
-                    },20000)
+                    // this.timeout['tickets'] = setTimeout( () => {
+                    //   this.getTickets( s )
+                    // },20000)
                   }
 
                   // console.log(this._init.currentUser)
@@ -138,9 +141,9 @@ export class WhatsappService {
                   this.tickets = []
 
                   if( to ){
-                    this.timeout['tickets'] = setTimeout( () => {
-                      this.getTickets( s )
-                    },20000)
+                    // this.timeout['tickets'] = setTimeout( () => {
+                    //   this.getTickets( s )
+                    // },20000)
                   }
 
                   const error = err.error;
@@ -148,6 +151,79 @@ export class WhatsappService {
                   console.error(err.statusText, error.msg);
 
                 });
+  }
+
+  updateConvs( ticket, l? ) {
+
+    return new Promise( (resolve, reject ) => {
+
+      this._api.restfulGet( ticket, 'Whatsapp/indivConv' )
+            .subscribe( res => {
+              l = false
+              console.log( res )
+              resolve( res['data'] )
+
+            }, err => {
+              l = false
+              const error = err.error;
+              this.toastr.error( error.msg, err.status );
+              console.error(err.statusText, error.msg);
+              reject()
+
+            });
+
+    });
+
+  }
+
+  indivList( ticket, data ){
+
+    if( data['assignee'] == this._init.currentUser['hcInfo']['zdId'] ){
+      this.sound.play()
+    }
+
+    let flag = false
+    let x = 0
+
+    let tktsO = this.tickets
+
+    for( let t of tktsO ){
+      if( t.ticketId == ticket ){
+
+        tktsO[x]['loading'] = true
+
+        // console.log('Registro Actualizado', t)
+        tktsO[x] = data
+
+        // console.log(this.tickets)
+
+        flag = true
+        break;
+      }
+      x++
+    }
+
+    if( !flag ){
+      this.tickets.push(data)
+    }
+
+    tktsO = this.orderPipe.transform(tktsO, 'lastMsg', true)
+    // let tkts = this.orderPipe.transform(tktsO, 'lastIsIn',true)
+
+    this.tickets = tktsO
+
+    return true
+
+    // console.log('Nuevo Registro')
+    // this.updateConvs( ticket ).then( dataNew => {
+    //   this.tickets.push( dataNew )
+    //   let tktsONew = this.orderPipe.transform(this.tickets, 'lastMsg')
+    //   let tktsNew = this.orderPipe.transform(tktsONew, 'lastIsIn',true)
+
+    //   this.tickets = tktsNew
+    // })
+
+
   }
 
   getConv( loc, ft = false, to = this.reloadChat, rl = true  ){
@@ -264,18 +340,18 @@ export class WhatsappService {
                   // }
 
                   if( to ){
-                    this.timeout['chat'] = setTimeout( () => {
-                      this.getConv( loc )
-                    },20000)
+                    // this.timeout['chat'] = setTimeout( () => {
+                    //   this.getConv( loc )
+                    // },20000)
                   }
 
                   this.chatLoading = false
 
                 }, err => {
                   if( rl ){
-                    this.timeout['chat'] = setTimeout( () => {
-                      this.getConv( loc )
-                    },20000)
+                    // this.timeout['chat'] = setTimeout( () => {
+                    //   this.getConv( loc )
+                    // },20000)
                   }
 
                   this.loading = false;

@@ -4,6 +4,7 @@ import { WhatsappService } from '../../../services/service.index';
 import * as moment from 'moment-timezone';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ImageModalComponent } from '../image-modal/image-modal.component';
+import { Subscription } from 'rxjs';
 declare var jQuery: any;
 declare var google: any
 

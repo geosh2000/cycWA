@@ -12,6 +12,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { KeysPipe } from './pipes/keys.pipe';
 import { DomseguroPipe } from './pipes/domseguro.pipe';
 
+import { environment } from '../environments/environment';
+
+import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+const config: SocketIoConfig = { url: environment.wsUrl, options: {} };
+
 
 // MATERIAL MODULES
 import {MatToolbarModule} from '@angular/material/toolbar';
@@ -48,6 +53,7 @@ import { InfoClienteComponent } from './components/whatsapp/info-cliente/info-cl
 import { AssignTicketComponent } from './components/whatsapp/assign-ticket/assign-ticket.component';
 import { ImageModalComponent } from './components/whatsapp/image-modal/image-modal.component';
 import { ZdWhatsappComponent } from './components/zendesk/zd-whatsapp/zd-whatsapp.component';
+import { ListaClientesComponent } from './components/lista-clientes/lista-clientes.component';
 
 
 
@@ -67,7 +73,8 @@ import { ZdWhatsappComponent } from './components/zendesk/zd-whatsapp/zd-whatsap
     InfoClienteComponent,
     AssignTicketComponent,
     ImageModalComponent,
-    ZdWhatsappComponent
+    ZdWhatsappComponent,
+    ListaClientesComponent
 
   ],
   imports: [
@@ -96,6 +103,7 @@ import { ZdWhatsappComponent } from './components/zendesk/zd-whatsapp/zd-whatsap
     CommonModule,
     OrderModule,
     NgxAudioPlayerModule,
+    SocketIoModule.forRoot(config),
 
   ],
   providers: [
