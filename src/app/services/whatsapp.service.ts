@@ -10,7 +10,8 @@ import * as moment from 'moment-timezone';
 import { FormGroup } from '@angular/forms';
 
 import { Howl } from 'howler';
-import { Subscription } from 'rxjs';
+import { Subscription, Subject, Observable } from 'rxjs';
+import { WebsocketService } from './websocket.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,9 +19,11 @@ import { Subscription } from 'rxjs';
 export class WhatsappService {
 
   ticketObs: Subscription
+  public wsStatus = new Subject<boolean>()
+  
 
   sound = new Howl({
-    src: ['/wazd/assets/WhatsApp.mp3'],
+    src: ['/wp/assets/WhatsApp.mp3'],
     volume: 1,
     preload: true
   });
@@ -63,11 +66,39 @@ export class WhatsappService {
   dpl = {}
   isDpl = false
 
+  zdIds = {}
+
   constructor( private _init:InitService, private _api:ApiService, private orderPipe: OrderPipe, private toastr:ToastrService ) {
     this.zdesk = Globals.ZDESK
+    this.getIds()
+  }
+
+  wsStatusChange(): Observable<boolean>{
+    return this.wsStatus.asObservable()
   }
 
   // CAMBIAR s = this._init.currentUser['hcInfo']['zdId'] para "mis conversaciones" por default
+  getIds(){
+    this._api.restfulGet( '', 'Whatsapp/getZdIds' )
+                .subscribe( res => {
+
+                  let ids = res['data']
+
+                  for( let d of ids ){
+                    this.zdIds[d['zdId']] = d['NCorto']
+                  }
+
+
+                }, err => {
+
+                  this.getIds()
+
+                  const error = err.error;
+                  this.toastr.error( error.msg, err.status );
+                  console.error(err.statusText, error.msg);
+
+                });
+  }
 
   getTickets( s = '1', to = this.reloadTickets ){
     // console.log('run tickets start')
@@ -141,9 +172,11 @@ export class WhatsappService {
                   this.tickets = []
 
                   if( to ){
-                    // this.timeout['tickets'] = setTimeout( () => {
-                    //   this.getTickets( s )
-                    // },20000)
+                    this.timeout['tickets'] = setTimeout( () => {
+                      this.wsStatus.next( false )
+                      this.getTickets( s )
+                      this.wsStatus.next( true )
+                    },300000)
                   }
 
                   const error = err.error;
@@ -178,6 +211,8 @@ export class WhatsappService {
 
   indivList( ticket, data ){
 
+    data['agentName'] = this.zdIds[data['assignee']]
+
     if( data['assignee'] == this._init.currentUser['hcInfo']['zdId'] ){
       this.sound.play()
     }
@@ -192,7 +227,9 @@ export class WhatsappService {
 
         tktsO[x]['loading'] = true
 
-        // console.log('Registro Actualizado', t)
+        // console.log('Registro Nuevo', data)
+        // console.log('Registro Viejo', t)
+        // console.log('Ids', this.zdIds)
         tktsO[x] = data
 
         // console.log(this.tickets)
@@ -223,6 +260,22 @@ export class WhatsappService {
     //   this.tickets = tktsNew
     // })
 
+
+  }
+
+  indivListTicket( ticket ){
+
+    this._api.restfulGet( ticket, 'Whatsapp/indivConv' )
+        .subscribe( res => {
+
+          this.indivList( ticket, res['data'])
+
+        }, err => {
+          const error = err.error;
+          this.toastr.error( error.msg, err.status );
+          console.error(err.statusText, error.msg);
+
+        });
 
   }
 
@@ -550,10 +603,25 @@ export class WhatsappService {
                       this.dpl = err['user']
                     }
 
+                    this.indivListTicket( this.actualTkt )
+
                     this.toastr.error( msg, err['description'] );
                   }else{
                     this.toastr.success( 'Información guardada correctamente', 'Guardado' );
+
+                    // this.indivList( this.actualTkt, msg['data'] )
                     this.getUserInfo()
+                    this._api.restfulGet( this.actualTkt, 'Whatsapp/indivConv' )
+                        .subscribe( rd => {
+                          this.indivList( this.actualTkt, rd['data'] )
+
+                        }, err => {
+                          const error = err.error;
+                          this.toastr.error( error.msg, err.status );
+                          console.error(err.statusText, error.msg);
+
+
+                        });
                   }
 
 

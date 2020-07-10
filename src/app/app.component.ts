@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { TokenCheckService, WhatsappService } from './services/service.index';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 
 declare var jQuery: any;
 import * as moment from 'moment-timezone';
@@ -37,7 +37,9 @@ export class AppComponent implements OnInit, AfterViewInit {
     this._wa.zdesk = Globals.ZDESK
   }
 
-  ngOnInit(){}
+  ngOnInit(){
+    
+  }
 
   ngAfterViewInit(){
     if( this._wa.zdesk ){

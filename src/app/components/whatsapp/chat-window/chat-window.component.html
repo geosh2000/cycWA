@@ -25,7 +25,7 @@
                                     <mat-basic-audio-player [audioUrl]="c['attachments'][0]['content_url']" title="audio" [displayTitle]="false" [displayVolumeControls]="false"></mat-basic-audio-player>
                                 </div>
                                 <div *ngSwitchCase="'application/pdf'">
-                                    <a [href]="c['attachments'][0]['content_url']" target="_blank"><img src="/wazd/assets/pdf.png" width="65"></a>
+                                    <a [href]="c['attachments'][0]['content_url']" target="_blank"><img src="/wp/assets/pdf.png" width="65"></a>
                                 </div>
                                 <div *ngSwitchDefault>
                                     <span class="font-weight-light font-italic">Archivo no soportado ({{c['attachments'][0]['content_type']}})</span>

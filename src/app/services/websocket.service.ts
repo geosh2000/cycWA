@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
 import { Router } from '@angular/router';
 import { Usuario } from '../classes/Usuarios';
+import { WhatsappService } from './whatsapp.service';
+import { Subject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +14,10 @@ export class WebsocketService {
   public usuario: Usuario;
   public router: Router;
 
+  actualTicket: any
+
   constructor(
-    private socket: Socket
+    private socket: Socket, private _wa: WhatsappService
   ) {
     this.cargarStorage();
     this.checkStatus();
@@ -25,11 +29,14 @@ export class WebsocketService {
       this.cargarStorage();
       console.log('Conectado al servidor');
       this.socketStatus = true;
+      this._wa.getTickets();
+      this._wa.wsStatus.next( true )
     });
 
     this.socket.on('disconnect', () => {
       console.log('Desconectado al servidor');
       this.socketStatus = false;
+      this._wa.wsStatus.next( false )
     });
 
   }
@@ -85,6 +92,24 @@ export class WebsocketService {
 
   }
 
+  setUrl( url: string = window.location.href ) {
+
+    return new Promise( (resolve, reject ) => {
+
+      this.emit( 'desde-url', { url }, res => {
+
+        // this.usuario = new Usuario( url );
+        // this.guardarStorage();
+
+        resolve();
+
+      });
+
+    });
+
+
+  }
+
   guardarStorage() {
 
     localStorage.setItem( 'usuario', JSON.stringify( this.usuario ) );
@@ -96,6 +121,10 @@ export class WebsocketService {
     if ( localStorage.getItem( 'currentUser' ) ) {
       this.usuario = JSON.parse( localStorage.getItem( 'currentUser' ) );
       this.loginWS( this.usuario['username'] )
+      if( this.actualTicket ){
+        this.setTicket( this.actualTicket )
+      }
+      this.setUrl()
     }
 
   }

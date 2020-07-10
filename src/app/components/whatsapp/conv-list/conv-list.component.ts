@@ -39,10 +39,10 @@ export class ConvListComponent implements OnInit, OnDestroy {
 
         if ( params.id ){
           this._wa.reloadTickets = true
-          this._wa.getTickets( params.id )
+          // this._wa.getTickets( params.id )
         }else{
           this._wa.reloadTickets = true
-          this._wa.getTickets()
+          // this._wa.getTickets()
         }
 
     });
@@ -59,6 +59,21 @@ export class ConvListComponent implements OnInit, OnDestroy {
       // console.log( msg );
       this._wa.indivList( msg['ticket'], msg['data'] )
     });
+
+    this._wa.wsStatusChange().subscribe( status => {
+      if ( status ) {
+        console.log( 'Socket connected', status)
+
+        this.newConvsObs.unsubscribe();
+        this.newConvsObs = this.chat.getNewWhatsapps().subscribe(  msg => {
+          // console.log( msg );
+          this._wa.indivList( msg['ticket'], msg['data'] )
+        });
+      }else{
+        console.log( 'Socket disconnected', status)
+        this.newConvsObs.unsubscribe();
+      }
+    })
 
   }
 
@@ -148,7 +163,7 @@ export class ConvListComponent implements OnInit, OnDestroy {
       this._wa.ticketObs = this.chat.notifyNewMsgTicket( t['ticketId'] ).subscribe(
         msg => {
           console.log(msg)
-          this._wa.getConv( t['ticketId'], true )
+          this._wa.getConv( t['ticketId'] )
         })
     }else{
       this._route.navigate([`/chat/${t['ticketId']}`]);

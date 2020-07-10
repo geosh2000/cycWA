@@ -20,12 +20,17 @@
             </mat-form-field>
             <mat-progress-bar mode="buffer" *ngIf="_wa.loadingInfo || _wa.loadingUI"></mat-progress-bar>
         </ng-container> -->
+        <ng-container *ngIf="tipo != 'chat'">
+            <span class="badge badge-success m-1" style="font-weight: normal!important;" *ngIf="ws.socketStatus">Auto-Refresh</span>
+            <span class="badge badge-danger m-1" style="font-weight: normal!important;" *ngIf="!ws.socketStatus">Auto-Refresh</span>
+            <button mat-icon-button color="accent" (click)="_wa.getTickets()" [disabled]="_wa.loading"><mat-icon>refresh</mat-icon></button>
+        </ng-container>
         <mat-icon class="text-success" aria-hidden="false" aria-label="Example heart icon" (click)="logout()" *ngIf="_token.token && (tipo == '' || tipo == 'chat')">person</mat-icon>
         <mat-icon class="" aria-hidden="false" aria-label="Example delete icon" (click)="login()" *ngIf="!_token.token && (tipo == '' || tipo == 'chat')">person_outline</mat-icon>
         <mat-icon [matMenuTriggerFor]="moreConv" *ngIf="_token.token && isChat(_route.url) && tipo == ''">more_vert</mat-icon>
-        <mat-icon [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu" *ngIf="_init.currentUser && !isChat(_route.url) && tipo == ''">more_vert</mat-icon>
+        <!-- <mat-icon [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu" *ngIf="_init.currentUser && !isChat(_route.url) && tipo == ''">more_vert</mat-icon> -->
         <mat-icon [matMenuTriggerFor]="moreConv" *ngIf="_token.token && tipo == 'chat' && _wa.chatInfo['rqId']">more_vert</mat-icon>
-        <mat-icon [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu" *ngIf="_init.currentUser && tipo == 'conv'">more_vert</mat-icon>
+        <!-- <mat-icon [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu" *ngIf="_init.currentUser && tipo == 'conv'">more_vert</mat-icon> -->
 
 
 

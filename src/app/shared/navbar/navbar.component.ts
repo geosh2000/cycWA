@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { TokenCheckService, InitService, WhatsappService } from '../../services/service.index';
+import { WebsocketService } from '../../services/websocket.service';
 
 
 declare var jQuery:any;
@@ -18,7 +19,7 @@ export class NavbarComponent implements OnInit {
   @Input() idiomas = []
   @Output() _link = new EventEmitter<any>()
 
-  constructor( public _init:InitService, public _token:TokenCheckService, public _wa:WhatsappService, public _route:Router,
+  constructor( public _init:InitService, public _token:TokenCheckService, public _wa:WhatsappService, public _route:Router, public ws: WebsocketService,
                private location: Location) { }
 
   ngOnInit() {
