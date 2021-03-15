@@ -18,6 +18,20 @@
                                 <div *ngSwitchCase="'image/png'">
                                     <img (click)="_img.openImage(c['attachments'][0]['content_url'])" [src]="c['attachments'][0]['thumbnails'][0]['content_url']" alt="attachment" [height]="c['attachments'][0]['thumbnails'][0]['height']" [width]="c['attachments'][0]['thumbnails'][0]['width']">
                                 </div>
+                                <div *ngSwitchCase="'image/webp'">
+                                    <!-- <picture (click)="_img.openImage(c['attachments'][0]['content_url'])" [height]="c['attachments'][0]['thumbnails'][0]['height']" [width]="c['attachments'][0]['thumbnails'][0]['width']"> -->
+                                    <picture (click)="_img.openImage(c['attachments'][0]['content_url'])" >
+                                        <source [srcset]="c['attachments'][0]['content_url']" type="image/webp">
+                                        <source [srcset]="c['attachments'][0]['content_url']" type="image/jpg">
+                                        <img [src]="c['attachments'][0]['content_url']" alt="attachment" style="height: 100px">
+                                    </picture>
+                                </div>
+                                <div *ngSwitchCase="'video/mp4'">
+                                    <video  controls>
+                                        <source [src]="c['attachments'][0]['content_url']" type="video/mp4">
+                                        <p><i class="far fa-times-circle"></i> No Preview Available</p>
+                                    </video>
+                                </div>
                                 <div class="mr-auto" *ngSwitchCase="'audio/ogg'">
                                     <mat-basic-audio-player [audioUrl]="c['attachments'][0]['content_url']" title="audio" [displayTitle]="false" [displayVolumeControls]="false"></mat-basic-audio-player>
                                 </div>

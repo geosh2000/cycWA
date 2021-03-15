@@ -102,16 +102,18 @@ export class ConvListComponent implements OnInit, OnDestroy {
   formatTime( t, f ){
 
     let r
+    let tm = moment(t)
 
-    if( moment(t) < moment(moment().format('YYYY-MM-DD')) ){
-      if( moment(t).format('YYYY-MM-DD') == moment().subtract(1,'days').format('YYYY-MM-DD') ){
-        r = '<span class="text-danger">' + 'ayer '+moment(t).format(f) + '</span>'
+    if( tm < moment(moment().format('YYYY-MM-DD')) ){
+      if( tm.format('YYYY-MM-DD') == moment().subtract(1,'days').format('YYYY-MM-DD') ){
+        r = '<span class="text-danger">' + 'ayer '+tm.format(f) + '</span>'
       }else{
-        r = '<span class="text-danger">' + moment(t).format('DD-MMM '+f) + '</span>'
+        r = '<span class="text-danger">' + tm.format('DD-MMM '+f) + '</span>'
       }
     }else{
-      r = '<span class="text-success">' + moment(t).format(f) + '</span>'
+      r = '<span class="text-success">' + tm.format(f) + '</span>'
     }
+
 
     return r
   }

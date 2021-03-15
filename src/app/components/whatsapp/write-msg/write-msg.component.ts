@@ -178,4 +178,10 @@ export class WriteMsgComponent implements OnInit {
                 });
   }
 
+  autoGrowTextZone(e) {
+    e.target.style.height = "0px";
+    e.target.style.height = (e.target.scrollHeight + 25)+"px";
+    this.msgSend = e.target.value
+  }
+
 }
